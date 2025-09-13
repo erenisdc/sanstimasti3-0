@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Who's The Spy - Online Game</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div id="welcome-screen" class="screen active">
+        <div class="container">
+            <div class="game-logo">
+                <i class="fas fa-user-secret"></i>
+                <h1>Who's The Spy</h1>
+                <p>Find the spy among your friends!</p>
+            </div>
+            
+            <div class="menu-buttons">
+                <button class="btn btn-primary" onclick="showScreen('setup-screen')">
+                    <i class="fas fa-play"></i> Start Game
+                </button>
+                <button class="btn btn-secondary" onclick="showScreen('rules-screen')">
+                    <i class="fas fa-question-circle"></i> How to Play
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rules Screen -->
+    <div id="rules-screen" class="screen">
+        <div class="container">
+            <div class="header">
+                <button class="btn-back" onclick="showScreen('welcome-screen')">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2>How to Play</h2>
+            </div>
+            
+            <div class="rules-content">
+                <div class="rule-item">
+                    <div class="rule-number">1</div>
+                    <div class="rule-text">
+                        <h3>Word Distribution</h3>
+                        <p>Each player gets a word except the spy who gets a similar word</p>
+                    </div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-number">2</div>
+                    <div class="rule-text">
+                        <h3>Discussion Phase</h3>
+                        <p>Players take turns describing their word without saying it directly</p>
+                    </div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-number">3</div>
+                    <div class="rule-text">
+                        <h3>Voting</h3>
+                        <p>After discussion, everyone votes for who they think is the spy</p>
+                    </div>
+                </div>
+                
+                <div class="rule-item">
+                    <div class="rule-number">4</div>
+                    <div class="rule-text">
+                        <h3>Win Conditions</h3>
+                        <p>If the spy is caught, players win. If not, the spy wins!</p>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" onclick="showScreen('setup-screen')">
+                Got it! Let's Play
+            </button>
+        </div>
+    </div>
+
+    <!-- Setup Screen -->
+    <div id="setup-screen" class="screen">
+        <div class="container">
+            <div class="header">
+                <button class="btn-back" onclick="showScreen('welcome-screen')">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2>Game Setup</h2>
+            </div>
+            
+            <div class="setup-form">
+                <div class="form-group">
+                    <label for="player-count">Number of Players</label>
+                    <select id="player-count" class="form-control" onchange="updatePlayerNames()">
+                        <option value="3">3 Players</option>
+                        <option value="4" selected>4 Players</option>
+                        <option value="5">5 Players</option>
+                        <option value="6">6 Players</option>
+                        <option value="7">7 Players</option>
+                        <option value="8">8 Players</option>
+                        <option value="9">9 Players</option>
+                        <option value="10">10 Players</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Player Names</label>
+                    <div id="player-names-container">
+                        <!-- Player name inputs will be generated here -->
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category-select">Category</label>
+                    <select id="category-select" class="form-control">
+                        <option value="all">All Categories</option>
+                        <option value="animals">Animals</option>
+                        <option value="food">Food</option>
+                        <option value="fruits">Fruits</option>
+                        <option value="countries">Countries</option>
+                        <option value="tech">Tech</option>
+                        <option value="music">Music</option>
+                        <option value="sports">Sports</option>
+                        <option value="movies">Movies</option>
+                        <option value="landmarks">Landmarks</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="timer-enabled" checked onchange="toggleTimerOptions()">
+                        <span class="toggle-slider"></span>
+                        Enable Discussion Timer
+                    </label>
+                </div>
+                
+                <div class="form-group" id="timer-options">
+                    <label for="timer-select">Discussion Time</label>
+                    <select id="timer-select" class="form-control">
+                        <option value="120">2 Minutes</option>
+                        <option value="180" selected>3 Minutes</option>
+                        <option value="240">4 Minutes</option>
+                        <option value="300">5 Minutes</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" onclick="startGame()">
+                <i class="fas fa-rocket"></i> Start Round
+            </button>
+        </div>
+    </div>
+
+    <!-- Word Reveal Screen -->
+    <div id="word-screen" class="screen">
+        <div class="container">
+            <div class="word-reveal">
+                <div class="player-info">
+                    <h2 id="current-player">Player 1</h2>
+                    <p>Tap to see your word</p>
+                </div>
+                
+                <div class="word-card" id="word-card" onclick="revealWord()">
+                    <div class="word-front">
+                        <i class="fas fa-eye"></i>
+                        <p>Tap to Reveal</p>
+                    </div>
+                    <div class="word-back hidden">
+                        <div class="word-content">
+                            <h3 id="player-word">Loading...</h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="word-actions">
+                    <button class="btn btn-secondary" id="next-player-btn" onclick="nextPlayer()" style="display: none;">
+                        Next Player
+                    </button>
+                    <button class="btn btn-primary" id="start-discussion-btn" onclick="startDiscussion()" style="display: none;">
+                        Start Discussion
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Discussion Screen -->
+    <div id="discussion-screen" class="screen">
+        <div class="container">
+            <div class="discussion-content">
+                <h2>Discussion Phase</h2>
+                <p>Describe your words without saying them directly!</p>
+                
+                
+                <div class="timer-display" id="timer-display">
+                    <div class="timer-circle">
+                        <span id="timer-text">3:00</span>
+                    </div>
+                </div>
+                
+                <div class="discussion-info">
+                    <div class="info-card">
+                        <i class="fas fa-users"></i>
+                        <span id="player-count-display">4 Players</span>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-tag"></i>
+                        <span id="category-display">All Categories</span>
+                    </div>
+                </div>
+                
+                <div class="discussion-controls">
+                    <button class="btn btn-primary" id="end-discussion-btn" onclick="startVoting()">
+                        End Discussion & Vote
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Voting Screen -->
+    <div id="voting-screen" class="screen">
+        <div class="container">
+            <div class="voting-content">
+                <h2>Who is the Spy?</h2>
+                <p>Everyone votes for who they think is the spy</p>
+                
+                <div class="player-grid" id="voting-players">
+                    <!-- Players will be dynamically added here -->
+                </div>
+                
+                <div class="voting-actions">
+                    <button class="btn btn-primary" id="show-results-btn" onclick="showResults()" disabled>
+                        Show Results
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="results-screen" class="screen">
+        <div class="container">
+            <div class="results-content">
+                <div class="result-header">
+                    <h2 id="game-result">Game Results</h2>
+                    <div class="result-icon" id="result-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                </div>
+                
+                <div class="spy-reveal">
+                    <h3>The Spy Was:</h3>
+                    <div class="spy-card">
+                        <i class="fas fa-user-secret"></i>
+                        <span id="spy-name">Player X</span>
+                    </div>
+                </div>
+                
+                <div class="word-reveal-results">
+                    <div class="word-pair">
+                        <div class="word-item">
+                            <h4>Players' Word</h4>
+                            <span id="civilian-word">Word</span>
+                        </div>
+                        <div class="word-item spy-word">
+                            <h4>Spy's Word</h4>
+                            <span id="spy-word">Word</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="voting-results" id="voting-results">
+                    <!-- Voting results will be shown here -->
+                </div>
+                
+                <div class="result-actions">
+                    <button class="btn btn-primary" onclick="playAgain()">
+                        <i class="fas fa-redo"></i> Play Again
+                    </button>
+                    <button class="btn btn-secondary" onclick="showScreen('welcome-screen')">
+                        <i class="fas fa-home"></i> Main Menu
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="wordList.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
